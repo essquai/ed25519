@@ -1,0 +1,7 @@
+import  ("libm3")
+import  ("m3core")
+import  ("ed25519")
+
+implementation("Main")
+
+program  ("test")
