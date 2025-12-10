@@ -16,13 +16,13 @@ PROCEDURE CreateKeypair( VAR pub: PubKey; VAR prv: PrivKey; VAR s: Seed; ) =
 PROCEDURE Sign( VAR sig: Sig; msg: MsgArr; len: CARDINAL; VAR pub: PubKey; 
                 VAR prv: PrivKey; ) =
   BEGIN
-    M3ed25519raw.Sign( ADR(sig), msg, len, ADR(pub), ADR(prv) );
+    M3ed25519raw.Sign( ADR(sig), Address(msg), len, ADR(pub), ADR(prv) );
   END Sign;
 
 PROCEDURE Verify( VAR sig: Sig; msg: MsgArr; len: CARDINAL; 
                   VAR pub: PubKey; ) : BOOLEAN =
   BEGIN
-    RETURN M3ed25519raw.Verify( ADR(sig), msg, len, ADR(pub) );
+    RETURN M3ed25519raw.Verify( ADR(sig), Address(msg), len, ADR(pub) );
   END Verify;
 
 PROCEDURE AddScalar( VAR pub : PubKey; VAR prv : PrivKey; VAR s : Scalar; ) =
@@ -40,6 +40,17 @@ PROCEDURE KeyExchange( VAR shared : ShareKey; VAR pub : PubKey;
   BEGIN
     M3ed25519raw.KeyExchange( ADR(shared), ADR(pub), ADR(prv) );
   END KeyExchange;
+
+PROCEDURE Address( in : MsgArr ) : ADDRESS = 
+  VAR addr : ADDRESS;
+  BEGIN
+      IF (TYPECODE(in) = TYPECODE(MsgArr)) THEN
+          addr := ADR(in^[0]);
+      ELSE
+          addr := LOOPHOLE(in, ADDRESS);
+      END;
+      RETURN addr;
+  END Address;
 
 BEGIN
 END M3ed25519.
